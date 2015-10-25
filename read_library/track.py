@@ -5,12 +5,12 @@ import mutagen.mp3
 import mutagen.mp4
 import mutagen.musepack
 
-mutagen_readtags_function = {'ogg'  : lambda(x): mutagen.oggvorbis.Open(x),
-                             'mp3'  : lambda(x): mutagen.mp3.Open(x),
-                             'mpc'  : lambda(x): mutagen.musepack.Open(x),
-                             'mp4'  : lambda(x): mutagen.mp4.Open(x),
-                             'm4a'  : lambda(x): mutagen.mp4.Open(x),
-                             'flac' : lambda(x): mutagen.flac.Open(x)}
+mutagen_readtags_function = {'ogg'  : lambda x: mutagen.oggvorbis.Open(x),
+                             'mp3'  : lambda x: mutagen.mp3.Open(x),
+                             'mpc'  : lambda x: mutagen.musepack.Open(x),
+                             'mp4'  : lambda x: mutagen.mp4.Open(x),
+                             'm4a'  : lambda x: mutagen.mp4.Open(x),
+                             'flac' : lambda x: mutagen.flac.Open(x)}
 
 def decode_strings(obj):
     attr_names = [s for s in dir(obj) if s[0] != '_']
@@ -32,17 +32,17 @@ class Track:
 
         self.format = os.path.splitext(path)[1][1:]
 
-        self.dbm_artistid = u''
-        self.artistid = u''
-        self.artistname = u''
+        self.dbm_artistid = ''
+        self.artistid = ''
+        self.artistname = ''
 
-        self.dbm_albumartistid = u''
+        self.dbm_albumartistid = ''
 
-        self.albumartistid = u''
-        self.albumartistname = u''
+        self.albumartistid = ''
+        self.albumartistname = ''
 
-        self.releasename = u''
-        self.releaseid = u''
+        self.releasename = ''
+        self.releaseid = ''
 
         self.artist = None
         self.albumartist = None
@@ -72,7 +72,7 @@ class Track:
         elif self.format == 'm4a':
             try:
                 self.parse_mutagen_tags_m4a(tags)
-            except MP4StreamInfoError, msg:
+            except MP4StreamInfoError as msg:
                 error('m4a tag read problem: %s', msg)
                 raise
         elif self.format in ['ogg', 'flac']:
@@ -82,7 +82,7 @@ class Track:
         for att in dir(self):
             if att[0] == '_': continue
             try:
-                print('\t%s %s' % (att.ljust(25), repr(getattr(self, att))))
+                print(('\t%s %s' % (att.ljust(25), repr(getattr(self, att)))))
             except (UnicodeEncodeError, UnicodeDecodeError):
                 print('Couldn\'t print unicode data')
 
@@ -151,31 +151,31 @@ class Track:
 
 
     def parse_mutagen_tags_ogg_flac(self, tags):
-        mkeys = tags.keys()
+        mkeys = list(tags.keys())
         # artist name
         k = 'artist'
-        self.artistname = tags.has_key(k) and tags[k][0] or ''
+        self.artistname = k in tags and tags[k][0] or ''
         # artist id
         k = 'musicbrainz_artistid'
-        self.artistid = tags.has_key(k) and tags[k][0] or ''
+        self.artistid = k in tags and tags[k][0] or ''
         # album artist id
         k = 'musicbrainz_albumartistid'
-        self.albumartistid = tags.has_key(k) and tags[k][0] or ''
+        self.albumartistid = k in tags and tags[k][0] or ''
         # album artist name
         k = 'albumartist'
-        self.albumartistname = tags.has_key(k) and tags[k][0] or ''
+        self.albumartistname = k in tags and tags[k][0] or ''
         # release name
         k = 'album'
-        self.releasename = tags.has_key(k) and tags[k][0] or ''
+        self.releasename = k in tags and tags[k][0] or ''
         # release id
         k = 'musicbrainz_albumid'
-        self.releaseid = tags.has_key(k) and tags[k][0] or ''
+        self.releaseid = k in tags and tags[k][0] or ''
         # track name
         k = 'title'
-        self.trackname = tags.has_key(k) and tags[k][0] or ''
+        self.trackname = k in tags and tags[k][0] or ''
         # track id
         k = 'musicbrainz_trackid'
-        self.trackid = tags.has_key(k) and tags[k][0] or ''
+        self.trackid = k in tags and tags[k][0] or ''
 
 
     # tags = mutagen.mp4.Open('/media/Apus/All/Sun_Kil_Moon/April/02_The_Light.m4a')
@@ -213,31 +213,31 @@ class Track:
     # \xa9gen                                [u'Rock']
 
     def parse_mutagen_tags_m4a(self, tags):
-        mkeys = tags.keys()
+        mkeys = list(tags.keys())
         # artist name
         k = '\xa9ART'
-        self.artistname = tags.has_key(k) and tags[k][0] or ''
+        self.artistname = k in tags and tags[k][0] or ''
         # artist id
         k = '----:com.apple.iTunes:MusicBrainz Artist Id'
-        self.artistid = tags.has_key(k) and tags[k][0] or ''
+        self.artistid = k in tags and tags[k][0] or ''
         # album artist name
         key = 'aART'
-        self.albumartistname = tags.has_key(key) and tags[key][0] or ''
+        self.albumartistname = key in tags and tags[key][0] or ''
         # album artist id
         key = '----:com.apple.iTunes:MusicBrainz Album Artist Id'
-        self.albumartistid = tags.has_key(key) and tags[key][0] or ''
+        self.albumartistid = key in tags and tags[key][0] or ''
         # release name
         k = '\xa9alb'
-        self.releasename = tags.has_key(k) and tags[k][0] or ''
+        self.releasename = k in tags and tags[k][0] or ''
         # release id
         k = '----:com.apple.iTunes:MusicBrainz Album Id'
-        self.releaseid = tags.has_key(k) and tags[k][0] or ''
+        self.releaseid = k in tags and tags[k][0] or ''
         # track name
         k = '\xa9nam'
-        self.trackname = tags.has_key(k) and tags[k][0] or ''
+        self.trackname = k in tags and tags[k][0] or ''
         # track id
         k = '----:com.apple.iTunes:MusicBrainz Track Id'
-        self.trackid = tags.has_key(k) and tags[k][0] or ''
+        self.trackid = k in tags and tags[k][0] or ''
 
 
 # >>> for k in tags:
@@ -267,28 +267,28 @@ class Track:
     def parse_mutagen_tags_mp3(self, tags):
         # artist name
         k = 'TPE1' # how is 'TSOP' different?
-        self.artistname = tags.has_key(k) and tags[k].text[0] or ''
+        self.artistname = k in tags and tags[k].text[0] or ''
         # artist id
         k = 'TXXX:MusicBrainz Artist Id'
-        self.artistid = tags.has_key(k) and tags[k].text[0] or ''
+        self.artistid = k in tags and tags[k].text[0] or ''
         # album artist name
         k = 'TPE2'
-        self.albumartistname = tags.has_key(k) and tags[k].text[0] or ''
+        self.albumartistname = k in tags and tags[k].text[0] or ''
         # album artist id
         k = 'TXXX:MusicBrainz Album Artist Id'
-        self.albumartistid = tags.has_key(k) and tags[k].text[0] or ''
+        self.albumartistid = k in tags and tags[k].text[0] or ''
         # release name
         k = 'TALB'
-        self.releasename = tags.has_key(k) and tags[k].text[0] or ''
+        self.releasename = k in tags and tags[k].text[0] or ''
         # release id
         k = 'TXXX:MusicBrainz Album Id'
-        self.releaseid = tags.has_key(k) and tags[k].text[0] or ''
+        self.releaseid = k in tags and tags[k].text[0] or ''
         # track name
         k = 'TIT2'
-        self.trackname = tags.has_key(k) and tags[k].text[0] or ''
+        self.trackname = k in tags and tags[k].text[0] or ''
         # track id
         k = 'UFID:http://musicbrainz.org'
-        self.trackid = tags.has_key(k) and tags[k].data or ''
+        self.trackid = k in tags and tags[k].data or ''
 
 
 
@@ -318,25 +318,25 @@ class Track:
     def parse_mutagen_tags_mpc(self, tags):
         # artist name
         k = 'Artist' # how is 'TSOP' different?
-        self.artistname = tags.has_key(k) and tags[k].value or ''
+        self.artistname = k in tags and tags[k].value or ''
         # artist id
         k = 'Musicbrainz_Artistid'
-        self.artistid = tags.has_key(k) and tags[k].value or ''
+        self.artistid = k in tags and tags[k].value or ''
         # album artist name
         k = 'Album Artist'
-        self.albumartistname = tags.has_key(k) and tags[k].value or ''
+        self.albumartistname = k in tags and tags[k].value or ''
         # album artist id
         k = 'Musicbrainz_Albumartistid'
-        self.albumartistid = tags.has_key(k) and tags[k].value or ''
+        self.albumartistid = k in tags and tags[k].value or ''
         # release name
         k = 'Album'
-        self.releasename = tags.has_key(k) and tags[k].value or ''
+        self.releasename = k in tags and tags[k].value or ''
         # release id
         k = 'Musicbrainz_Albumid'
-        self.releaseid = tags.has_key(k) and tags[k].value or ''
+        self.releaseid = k in tags and tags[k].value or ''
         # track name
         k = 'Title'
-        self.trackname = tags.has_key(k) and tags[k].value or ''
+        self.trackname = k in tags and tags[k].value or ''
         # track id
         k = 'Musicbrainz_Trackid'
-        self.trackid = tags.has_key(k) and tags[k].value or ''
+        self.trackid = k in tags and tags[k].value or ''
