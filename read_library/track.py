@@ -12,14 +12,6 @@ mutagen_readtags_function = {'ogg'  : lambda x: mutagen.oggvorbis.Open(x),
                              'm4a'  : lambda x: mutagen.mp4.Open(x),
                              'flac' : lambda x: mutagen.flac.Open(x)}
 
-def decode_strings(obj):
-    attr_names = [s for s in dir(obj) if s[0] != '_']
-    for s in attr_names:
-        attr = getattr(obj, s)
-        if isinstance(attr, str):
-            setattr(obj, s, attr.decode('utf-8'))
-
-
 def is_music(path):
     return (os.path.isfile(path) or os.path.islink(path)) \
         and os.path.splitext(path)[1] in ['.ogg','.flac','.mp3','.mpc','.m4a']
@@ -54,7 +46,6 @@ class Track:
 
         try:
             self.set_tags()
-            decode_strings(self)
         except:
             error('failed to read tags for %s' % self.path)
         self.valid = True if (self.artistid or self.artistname) else False
