@@ -50,6 +50,9 @@ class Track:
             error('failed to read tags for %s' % self.path)
         self.valid = True if (self.artistid or self.artistname) else False
 
+    def __repr__(self):
+        return '%s(%s)' % (type(self).__name__, self.path)
+
     def set_tags(self):
         """Read metadata tags from music file at `path' using
         mutagen. This creates a rather complicated list structure,
