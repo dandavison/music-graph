@@ -1,50 +1,48 @@
-import os
+import pickle
 
-from flask import jsonify
+import flask
 from flask import Flask
-from flask import render_template
 
-import networkx as nx
 from networkx.readwrite import json_graph
 
+from settings import GRAPH_FILE
 
-MUSIC_DIR = os.path.expanduser('~/MusicFuckOffiTunes/')
 
+GRAPH = None
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def graph_html():
-    return render_template('graph.html')
+    return flask.render_template('graph.html', artists=get_artists())
 
 
-@app.route('/graph')
+@app.route('/graph', methods=['GET'])
 def graph_json():
-    g = make_graph()
-    return jsonify(json_graph.node_link_data(g))
+    # FIXME: do on copy
+    for n in GRAPH:
+        GRAPH.node[n]['name'] = n
+
+    return flask.jsonify(json_graph.node_link_data(GRAPH))
 
 
-def make_graph():
-    artists = os.listdir(MUSIC_DIR)
+@app.route('/graph/edges', methods=['POST'])
+def create_edge():
+    form = flask.request.form
+    GRAPH.add_edge(form['Artist_1'], form['Artist_2'])
+    return flask.redirect('/')
 
-    group_fn = lambda artist: int(a[0].lower() < 'm')
 
-    groups = {
-        0: [],
-        1: [],
-    }
-    for a in artists:
-        groups[group_fn(a)].append(a)
-
-    g = nx.Graph()
-    for a1, a2 in zip(groups[0], groups[1]):
-        g.add_edge(a1, a2)
-
-    for n in g:
-        g.node[n]['name'] = n
-
-    return g
+def get_artists():
+    return GRAPH.nodes()
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    with open(GRAPH_FILE, 'rb') as fp:
+        GRAPH = pickle.load(fp)
+    try:
+        app.run(debug=True)
+    except:
+        with open(GRAPH_FILE, 'wb') as fp:
+            pickle.dump(GRAPH, fp)
+        raise
