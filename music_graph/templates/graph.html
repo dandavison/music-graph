@@ -14,7 +14,6 @@
 
 </style>
 <body>
-  <div id="graph"></div>
   <div id="controls">
     <form method="POST" action="/graph/edges">
       <input name="Artist_1" list="artists"/>
@@ -27,16 +26,17 @@
      <input type="submit" value="Create Edge"/>
     </form>
   </div>
+  <div id="graph"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
 
-var width = 960,
-    height = 500;
+var width = 1200,
+    height = 800;
 
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-120)
+    .charge(-30)
     .linkDistance(30)
     .size([width, height]);
 
@@ -56,7 +56,7 @@ d3.json("/graph", function(error, graph) {
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .style("stroke-width", function(d) { return Math.sqrt(4); });
 
   var node = svg.selectAll(".node")
       .data(graph.nodes)
