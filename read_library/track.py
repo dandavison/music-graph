@@ -4,7 +4,6 @@ import mutagen.flac
 import mutagen.mp3
 import mutagen.mp4
 import mutagen.musepack
-import dedpy.ded as ded
 
 mutagen_readtags_function = {'ogg'  : lambda(x): mutagen.oggvorbis.Open(x),
                              'mp3'  : lambda(x): mutagen.mp3.Open(x),
@@ -12,6 +11,14 @@ mutagen_readtags_function = {'ogg'  : lambda(x): mutagen.oggvorbis.Open(x),
                              'mp4'  : lambda(x): mutagen.mp4.Open(x),
                              'm4a'  : lambda(x): mutagen.mp4.Open(x),
                              'flac' : lambda(x): mutagen.flac.Open(x)}
+
+def decode_strings(obj):
+    attr_names = [s for s in dir(obj) if s[0] != '_']
+    for s in attr_names:
+        attr = getattr(obj, s)
+        if isinstance(attr, str):
+            setattr(obj, s, attr.decode('utf-8'))
+
 
 def is_music(path):
     return (os.path.isfile(path) or os.path.islink(path)) \
@@ -47,7 +54,7 @@ class Track:
 
         try:
             self.set_tags()
-            ded.decode_strings(self)
+            decode_strings(self)
         except:
             error('failed to read tags for %s' % self.path)
         self.valid = True if (self.artistid or self.artistname) else False
