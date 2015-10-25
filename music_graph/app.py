@@ -8,17 +8,17 @@ import networkx as nx
 from networkx.readwrite import json_graph
 
 
-MUSIC_DIR = os.path.expanduser("~/MusicFuckOffiTunes/")
+MUSIC_DIR = os.path.expanduser('~/MusicFuckOffiTunes/')
 
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route('/')
 def graph_html():
     return render_template('graph.html')
 
 
-@app.route("/graph")
+@app.route('/graph')
 def graph_json():
     g = make_graph()
     return jsonify(json_graph.node_link_data(g))
@@ -46,5 +46,5 @@ def make_graph():
     return g
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
