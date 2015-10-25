@@ -16,6 +16,11 @@ def is_music(path):
     return (os.path.isfile(path) or os.path.islink(path)) \
         and os.path.splitext(path)[1] in ['.ogg','.flac','.mp3','.mpc','.m4a']
 
+
+def error(msg):
+    print(msg, file=sys.stderr)
+
+
 class Track:
     def __init__(self, path):
         self.path = path
