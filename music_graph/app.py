@@ -3,8 +3,6 @@ import pickle
 import flask
 from flask import Flask
 
-from networkx.readwrite import json_graph
-
 from settings import GRAPH_FILE
 
 
@@ -23,7 +21,7 @@ def graph_json():
     for n in GRAPH:
         GRAPH.node[n]['name'] = n
 
-    return flask.jsonify(json_graph.node_link_data(GRAPH))
+    return flask.jsonify(GRAPH.to_python())
 
 
 @app.route('/graph/edges', methods=['POST'])
