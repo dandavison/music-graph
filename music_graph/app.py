@@ -18,11 +18,12 @@ def graph_html():
 
 @app.route('/graph', methods=['GET'])
 def graph_json():
-    # FIXME: do on copy
-    for n in GRAPH:
-        GRAPH.node[n]['name'] = n
+    # Required by d3.js?
+    graph = GRAPH.copy()
+    for n in graph:
+        graph.node[n]['name'] = n
 
-    return flask.jsonify(GRAPH.to_python())
+    return flask.jsonify(graph.to_python())
 
 
 @app.route('/graph/edges', methods=['POST'])
