@@ -9,6 +9,9 @@ from settings import GRAPH_FILE
 
 class MusicGraph(nx.Graph):
 
+    def get_artist_names(self):
+        return set(self.nodes())
+
     @classmethod
     def from_python(cls, python):
         with mock.patch.object(nx, 'Graph', cls):

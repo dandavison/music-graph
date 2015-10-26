@@ -12,7 +12,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def graph_html():
-    return flask.render_template('graph.html', artists=GRAPH.nodes())
+    return flask.render_template('graph.html',
+                                 artists=sorted(GRAPH.get_artist_names()))
 
 
 @app.route('/graph', methods=['GET'])
@@ -27,7 +28,15 @@ def graph_json():
 @app.route('/graph/edges', methods=['POST'])
 def create_edge():
     form = flask.request.form
-    GRAPH.add_edge(form['Artist_1'], form['Artist_2'])
+    artist_1, artist_2 = form['Artist_1'], form['Artist_2']
+
+    def is_valid(name):
+        return name in GRAPH.get_artist_names()
+
+    if is_valid(artist_1) and is_valid(artist_2):
+        GRAPH.add_edge(artist_1, artist_2)
+        GRAPH.save()
+
     return flask.redirect('/')
 
 
