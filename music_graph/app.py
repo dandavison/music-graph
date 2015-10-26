@@ -1,9 +1,9 @@
-import pickle
+import json
 
 import flask
 from flask import Flask
 
-from settings import GRAPH_FILE
+from graph import MusicGraph
 
 
 GRAPH = None
@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def graph_html():
-    return flask.render_template('graph.html', artists=get_artists())
+    return flask.render_template('graph.html', artists=GRAPH.nodes())
 
 
 @app.route('/graph', methods=['GET'])
@@ -31,16 +31,6 @@ def create_edge():
     return flask.redirect('/')
 
 
-def get_artists():
-    return GRAPH.nodes()
-
-
 if __name__ == '__main__':
-    with open(GRAPH_FILE, 'rb') as fp:
-        GRAPH = pickle.load(fp)
-    try:
-        app.run(debug=True)
-    except:
-        with open(GRAPH_FILE, 'wb') as fp:
-            pickle.dump(GRAPH, fp)
-        raise
+    GRAPH = MusicGraph.load()
+    app.run(debug=True)

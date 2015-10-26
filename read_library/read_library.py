@@ -34,16 +34,19 @@ class Library(object):
             self.name2ids[artist_name].update([artist_id])
             self.id2names[artist_id].update([artist_name])
 
-    def to_json(self, **kwargs):
+    def to_python(self):
 
         def _reconcile(key2counter):
             return {str(key): str(counter.most_common()[0][0])
                     for key, counter in key2counter.items()}
 
-        return json.dumps({
+        return {
             'name2id': _reconcile(self.name2ids),
             'id2name': _reconcile(self.id2names),
-        }, **kwargs)
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_python(), indent=2, sort_keys=True)
 
 
 def validate_artist_id(artist_id):
@@ -94,4 +97,4 @@ if __name__ == '__main__':
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'library.json')
     with open(LIBRARY_FILE, 'w') as fp:
-        fp.write(lib.to_json(indent=2))
+        fp.write(lib.to_json())
