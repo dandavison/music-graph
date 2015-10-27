@@ -18,7 +18,7 @@ MBID_REGEX = re.compile(r'[0-9a-fA-F]' * 8 + '-' +
 
 class MusicLibrary(Persistable):
     file = LIBRARY_FILE
-    _attr_names = {'name2ids', 'id2names'}
+    _attr_names = {'name2ids'}
 
     def __init__(self, **kwargs):
         assert kwargs.keys() == self._attr_names
@@ -30,16 +30,14 @@ class MusicLibrary(Persistable):
 
     @classmethod
     def from_path(cls, path):
-        name2ids, id2names = defaultdict(Counter), defaultdict(Counter)
+        name2ids, defaultdict(Counter)
         for track in progress(get_tracks(path)):
             artist_name = validate_artist_name(track.artistname)
             artist_id = validate_artist_id(track.artistid)
             if artist_id and artist_name:
                 name2ids[artist_name].update([artist_id])
-                id2names[artist_id].update([artist_name])
 
-        return cls(name2ids=dict(name2ids),
-                   id2names=dict(id2names))
+        return cls(name2ids=dict(name2ids))
 
     def get_name_ids(self):
         for name, ids in self.name2ids.items():
