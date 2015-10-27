@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import mock
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -9,11 +11,15 @@ from music_graph.utils import Persistable
 class MusicGraph(nx.Graph, Persistable):
     file = GRAPH_FILE
 
+    # A networkx feature: maintain node order for consistent serialization.
+    node_dict_factory = OrderedDict
+    adjlist_dict_factory = OrderedDict
+
     def get_artist_names(self):
         return set(self.nodes())
 
     def add_nodes_from_library(self, library):
-        for name, mbid in library.get_name_ids():
+        for name, mbid in sorted(library.get_name_ids()):
             self.add_node(name, mbid=mbid)
 
     @classmethod
