@@ -21,7 +21,7 @@ def is_music(path):
 
 
 def get_tracks(path):
-    tracks = [Track(f) for f in file_paths(path) if is_music(f)]
+    tracks = (Track(f) for f in file_paths(path) if is_music(f))
     for t in tracks:
 
         try:
