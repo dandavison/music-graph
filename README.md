@@ -1,3 +1,5 @@
+![image](https://cloud.githubusercontent.com/assets/52205/10752496/070dda48-7c47-11e5-953e-7b368ab4f2e4.png)
+
 #### Set up a python3 virtualenv for the project
 ```sh
 brew install python3
