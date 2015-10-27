@@ -1,4 +1,8 @@
+from collections import defaultdict
+from collections import Counter
 from collections import OrderedDict
+from itertools import combinations
+import sys
 
 import mock
 import networkx as nx
@@ -19,8 +23,21 @@ class MusicGraph(nx.Graph, Persistable):
         return set(self.nodes())
 
     def add_nodes_from_library(self, library):
-        for name, mbid in sorted(library.get_name_ids()):
-            self.add_node(name, mbid=mbid)
+        genre2mbids = defaultdict(set)
+        for mbid, data in sorted(library.data.items()):
+            for key in ['names', 'genres']:
+                if len(data[key]) > 1:
+                    print("ID maps to multiple %s: %s, [%s]" %
+                          (key, data[key], ', '.join(data[key])), file=sys.stderr)
+            name = Counter(data['names']).most_common()[0][0]
+            genre = Counter(data['genres']).most_common()[0][0]
+            self.add_node(mbid, name=name, genre=genre)
+            if genre:
+                genre2mbids[genre].add(mbid)
+
+        for genre, mbids in genre2mbids.items():
+            for mbid_1, mbid_2 in combinations(mbids, 2):
+                self.add_edge(mbid_1, mbid_2)
 
     @classmethod
     def from_python(cls, python):

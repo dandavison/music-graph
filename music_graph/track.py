@@ -58,6 +58,8 @@ class Track(object):
         self.releasename = ''
         self.releaseid = ''
 
+        self.genre = ''
+
         self.artist = None
         self.albumartist = None
 
@@ -305,7 +307,8 @@ class Track(object):
         # track id
         k = 'UFID:http://musicbrainz.org'
         self.trackid = k in tags and tags[k].data or ''
-
+        k = 'TCON'
+        self.genre = k in tags and tags[k].text[0] or ''
 
 
 #     >>> tags = mutagen.musepack.Open('/home/dan/music/dbm/03_Plush.mpc')

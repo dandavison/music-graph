@@ -5,4 +5,4 @@ from music_graph.library import MusicLibrary
 
 
 (path,) = sys.argv[1:]
-MusicLibrary.from_path(path).save()
+MusicLibrary(path).save()
