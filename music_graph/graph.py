@@ -1,19 +1,19 @@
-import json
-
 import mock
 import networkx as nx
 from networkx.readwrite import json_graph
 
-from settings import GRAPH_FILE
+from music_graph.settings import GRAPH_FILE
+from music_graph.utils import Persistable
 
 
-class MusicGraph(nx.Graph):
+class MusicGraph(nx.Graph, Persistable):
+    file = GRAPH_FILE
 
     def get_artist_names(self):
         return set(self.nodes())
 
     def add_nodes_from_library(self, library):
-        for name, mbid in library['name2id'].items():
+        for name, mbid in library.get_name_ids():
             self.add_node(name, mbid=mbid)
 
     @classmethod
@@ -21,18 +21,5 @@ class MusicGraph(nx.Graph):
         with mock.patch.object(nx, 'Graph', cls):
             return json_graph.node_link_graph(python)
 
-    @classmethod
-    def load(cls):
-        with open(GRAPH_FILE, 'r') as fp:
-            return cls.from_python(json.load(fp))
-
     def to_python(self):
         return json_graph.node_link_data(self)
-
-    def to_json(self):
-        return (json.dumps(self.to_python(), indent=2, sort_keys=True)
-                .replace(' \n', '\n'))
-
-    def save(self):
-        with open(GRAPH_FILE, 'w') as fp:
-            fp.write(self.to_json())

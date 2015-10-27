@@ -10,18 +10,18 @@ pip install -r requirements.txt
 #### Create library file listing artists in your music library
 This will create `data/library.json`
 ```sh
-python library/write_library_file.py /path/to/MyMusicLibrary
+./bin/write_library_file /path/to/MyMusicLibrary
 ```
 
 #### Create initial graph file
 This will create `data/graph.json`. The graph has one node per artist and no edges.
 ```sh
-python music_graph/write_initial_graph.py
+./bin/write_initial_graph
 ```
 
 #### Run the server
 ```sh
-python music_graph/app.py
+python music_graph/server.py
 ```
 
 Go to http://127.0.0.1:5000/

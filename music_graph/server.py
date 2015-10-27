@@ -36,7 +36,7 @@ def create_edge():
 
     if is_valid(artist_1) and is_valid(artist_2):
         GRAPH.add_edge(artist_1, artist_2)
-        GRAPH.save()
+    GRAPH.save()
 
     return flask.redirect('/')
 

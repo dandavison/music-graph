@@ -5,6 +5,9 @@ import mutagen.mp3
 import mutagen.mp4
 import mutagen.musepack
 
+from music_graph.utils import file_paths
+
+
 mutagen_readtags_function = {'ogg'  : lambda x: mutagen.oggvorbis.Open(x),
                              'mp3'  : lambda x: mutagen.mp3.Open(x),
                              'mpc'  : lambda x: mutagen.musepack.Open(x),
@@ -17,11 +20,25 @@ def is_music(path):
         and os.path.splitext(path)[1] in ['.ogg','.flac','.mp3','.mpc','.m4a']
 
 
+def get_tracks(path):
+    tracks = [Track(f) for f in file_paths(path) if is_music(f)]
+    for t in tracks:
+
+        try:
+            t.set_tags()
+        except Exception as ex:
+            print("%s: %s" % (ex.__class__.__name__, ex),
+                  file=sys.stderr)
+            continue
+
+        yield t
+
+
 def error(msg):
     print(msg, file=sys.stderr)
 
 
-class Track:
+class Track(object):
     def __init__(self, path):
         self.path = path
         if not os.path.exists(path):
