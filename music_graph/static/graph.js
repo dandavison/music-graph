@@ -1,3 +1,10 @@
+var playArtist = function(id) {
+  $.ajax("/play?artist_id=" + id, {
+    method: "POST",
+  })
+}
+
+
 // http://bl.ocks.org/mbostock/4062045
 // https://github.com/d3/d3-plugins/tree/master/fisheye
 
@@ -35,7 +42,8 @@ d3.json("/graph", function(error, graph) {
       .attr("class", "node")
       .attr("r", 5)
       .style("fill", function(d) { return color(d.group); })
-      .call(force.drag);
+      .call(force.drag)
+      .on("click", function(d) { playArtist(d.id); });
 
   node.append("title")
       .text(function(d) { return d.name; });
