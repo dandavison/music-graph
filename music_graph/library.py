@@ -41,8 +41,9 @@ class MusicLibrary(Persistable):
                     'path': track.path,
                     'name': track.trackname,
                 }
-            except ValidationError:
-                print("Failed to validate track: %s" % track, file=sys.stderr)
+            except ValidationError as ex:
+                print("Failed to validate track: %s: %s" % (track, ex),
+                      file=sys.stderr)
                 continue
             self.data[artist_id]['names'].update([artist_name])
             self.data[artist_id]['genres'].update([genre])
@@ -62,14 +63,14 @@ def validate_artist_id(artist_id):
     if MBID_REGEX.match(artist_id):
         return artist_id
     else:
-        raise ValidationError
+        raise ValidationError("Invalid artist ID: %s" % artist_id)
 
 
 def validate_artist_name(artist_name):
     if artist_name:
         return str(artist_name)
     else:
-        raise ValidationError
+        raise ValidationError("Invalid artist name: %s" % artist_name)
 
 
 def validate_artist_genre(genre):
