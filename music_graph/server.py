@@ -44,4 +44,6 @@ def _is_valid_edge(artist_1, artist_2):
 
 if __name__ == '__main__':
     GRAPH = MusicGraph.load()
+    print("Loaded graph with %d nodes and %d edges" % (GRAPH.number_of_nodes(),
+                                                       GRAPH.number_of_edges()))
     app.run(debug=True)
