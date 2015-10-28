@@ -33,12 +33,15 @@ def create_edge():
     return flask.redirect('/')
 
 
-def _is_valid_edge(artist_1, artist_2):
-    def is_valid(name):
-        return name in GRAPH.get_artist_names()
+def validate_artist(artist):
+    if artist not in GRAPH.get_artist_names():
+        raise ValidationError
+    return artist
 
-    return (is_valid(artist_1) and
-            is_valid(artist_2) and
+
+def _is_valid_edge(artist_1, artist_2):
+    return (validate_artist(artist_1) and
+            validate_artist(artist_2) and
             artist_1 != artist_2)
 
 
