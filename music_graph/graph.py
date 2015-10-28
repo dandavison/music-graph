@@ -37,9 +37,9 @@ class MusicGraph(nx.Graph, Persistable):
                 genre2mbids[genre].add(mbid)
 
         for genre, mbids in genre2mbids.items():
-            mbids = sorted(mbids)
-            for mbid in mbids[1:]:
-                self.add_edge(mbids[0], mbid)
+            self.add_node(genre, name=genre)
+            for mbid in mbids:
+                self.add_edge(genre, mbid)
 
     @classmethod
     def from_python(cls, python):
