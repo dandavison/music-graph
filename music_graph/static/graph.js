@@ -7,8 +7,8 @@ var width = 1200,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-30)
-    .linkDistance(30)
+    .charge(-20)
+    .linkDistance(40)
     .size([width, height]);
 
 var svg = d3.select("#graph").append("svg")
