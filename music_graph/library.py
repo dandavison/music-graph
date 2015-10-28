@@ -25,7 +25,8 @@ class MusicLibrary(Persistable):
 
     def __init__(self, path=None):
         self.data = defaultdict(lambda: {'names': Counter(),
-                                    'genres': Counter()})
+                                    'genres': Counter(),
+                                    'tracks': []})
         if path:
             self.populate(path)
         self.data = dict(self.data)
@@ -36,11 +37,16 @@ class MusicLibrary(Persistable):
                 artist_name = validate_artist_name(track.artistname)
                 artist_id = validate_artist_id(track.artistid)
                 genre = validate_artist_genre(track.genre)
+                track_data = {
+                    'path': track.path,
+                    'name': track.trackname,
+                }
             except ValidationError:
                 print("Failed to validate track: %s" % track, file=sys.stderr)
                 continue
             self.data[artist_id]['names'].update([artist_name])
             self.data[artist_id]['genres'].update([genre])
+            self.data[artist_id]['tracks'].append(track_data)
 
     def to_python(self):
         return self.data
