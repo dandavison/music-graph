@@ -1,7 +1,6 @@
 from collections import defaultdict
 from collections import Counter
 from collections import OrderedDict
-from itertools import combinations
 import sys
 
 import mock
@@ -36,8 +35,9 @@ class MusicGraph(nx.Graph, Persistable):
                 genre2mbids[genre].add(mbid)
 
         for genre, mbids in genre2mbids.items():
-            for mbid_1, mbid_2 in combinations(mbids, 2):
-                self.add_edge(mbid_1, mbid_2)
+            mbids = sorted(mbids)
+            for mbid in mbids[1:]:
+                self.add_edge(mbids[0], mbid)
 
     @classmethod
     def from_python(cls, python):
