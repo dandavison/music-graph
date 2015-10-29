@@ -42,8 +42,7 @@ class MusicLibrary(Persistable):
                     'name': track.trackname,
                 }
             except ValidationError as ex:
-                print("Failed to validate track: %s: %s" % (track, ex),
-                      file=sys.stderr)
+                print >>sys.stderr, "Failed to validate track: %s: %s" % (track, ex)
                 continue
             self.data[artist_id]['names'].update([artist_name])
             self.data[artist_id]['genres'].update([genre])

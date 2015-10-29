@@ -27,15 +27,14 @@ def get_tracks(path):
         try:
             t.set_tags()
         except Exception as ex:
-            print("%s: %s" % (ex.__class__.__name__, ex),
-                  file=sys.stderr)
+            print >>sys.stderr, "%s: %s" % (ex.__class__.__name__, ex)
             continue
 
         yield t
 
 
 def error(msg):
-    print(msg, file=sys.stderr)
+    print >>sys.stderr, msg
 
 
 class Track(object):
@@ -100,7 +99,7 @@ class Track(object):
         for att in dir(self):
             if att[0] == '_': continue
             try:
-                print(('\t%s %s' % (att.ljust(25), repr(getattr(self, att)))))
+                print('\t%s %s' % (att.ljust(25), repr(getattr(self, att))))
             except (UnicodeEncodeError, UnicodeDecodeError):
                 print('Couldn\'t print unicode data')
 

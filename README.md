@@ -1,12 +1,11 @@
 ![image](https://cloud.githubusercontent.com/assets/52205/10752496/070dda48-7c47-11e5-953e-7b368ab4f2e4.png)
 
-#### Set up a python3 virtualenv for the project
+#### Set up a virtualenv for the project
 ```sh
-brew install python3
-pip install --upgrade pip virtualenv
-virtualenv -p python3 /path/to/virtualenvs/music-graph
+virtualenv /path/to/virtualenvs/music-graph
 . /path/to/virtualenvs/music-graph/bin/activate
 pip install -r requirements.txt
+python setup.py develop
 ```
 
 #### Create library file listing artists in your music library

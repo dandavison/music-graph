@@ -28,8 +28,8 @@ class MusicGraph(nx.Graph, Persistable):
                 continue
             for key in ['names', 'genres']:
                 if len(data[key]) > 1:
-                    print("ID maps to multiple %s: %s, [%s]" %
-                          (key, data[key], ', '.join(data[key])), file=sys.stderr)
+                    print >>sys.stderr, "ID maps to multiple %s: %s, [%s]" % (
+                        key, data[key], ', '.join(data[key]))
             name = Counter(data['names']).most_common()[0][0]
             genre = Counter(data['genres']).most_common()[0][0]
             self.add_node(mbid, name=name, genre=genre)
