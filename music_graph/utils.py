@@ -24,10 +24,10 @@ class Persistable(object):
         return cls(**python)
 
 
-def progress(iterable):
+def progress(iterable, period=1000):
     for i, item in enumerate(iterable):
         yield item
-        if not i % 1000:
+        if not i % period:
             print(i)
 
 

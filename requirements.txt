@@ -1,3 +1,4 @@
+-e git+git@github.com:rossnanop/pyechonest.git@c8b1106e5308c75a88d8195557aad5e6e82d7d7a#egg=pyechonest-master
 flask==0.10.1
 ipdb==0.8.1
 ipython==4.0.0
