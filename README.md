@@ -26,3 +26,10 @@ python music_graph/server.py
 ```
 
 Go to http://127.0.0.1:5000/
+
+
+#### Fetch Echonest similar artist data
+Fetches 100 similar artists per artist. Creates `data/echonest_similar_artists.json`
+```sh
+./bin/write_echonest_similar_artists.py
+```
