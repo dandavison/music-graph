@@ -1,8 +1,13 @@
 from collections import OrderedDict
+from datetime import datetime
+from datetime import timedelta
 import json
 import os
+import time
 
 from fish import ProgressFish
+
+THIRTY_SECONDS = timedelta(seconds=30)
 
 
 class Persistable(object):
@@ -31,6 +36,17 @@ def progress(iterable, **kwargs):
     for i, item in enumerate(iterable):
         yield item
         fish.animate(amount=i)
+
+
+def wait_until(fn, timeout=THIRTY_SECONDS, sleep=1):
+    start = datetime.now()
+    while True:
+        if fn():
+            return
+        elif datetime.now() - start > timeout:
+            raise RuntimeError("Timeout")
+        else:
+            time.sleep(sleep)
 
 
 def file_paths(path):
