@@ -1,6 +1,6 @@
-![image](https://cloud.githubusercontent.com/assets/52205/10752496/070dda48-7c47-11e5-953e-7b368ab4f2e4.png)
+![image](https://cloud.githubusercontent.com/assets/52205/10836926/e9ca1d4e-7e70-11e5-9382-78e1fac20f7b.png)
 
-#### Set up a virtualenv for the project
+#### Set up a virtualenv
 ```sh
 virtualenv /path/to/virtualenvs/music-graph
 . /path/to/virtualenvs/music-graph/bin/activate
