@@ -2,6 +2,8 @@ from collections import OrderedDict
 import json
 import os
 
+from fish import ProgressFish
+
 
 class Persistable(object):
 
@@ -24,11 +26,11 @@ class Persistable(object):
         return cls(**python)
 
 
-def progress(iterable, period=1000):
+def progress(iterable, **kwargs):
+    fish = ProgressFish(**kwargs)
     for i, item in enumerate(iterable):
         yield item
-        if not i % period:
-            print(i)
+        fish.animate(amount=i)
 
 
 def file_paths(path):
