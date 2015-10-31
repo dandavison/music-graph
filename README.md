@@ -38,9 +38,13 @@ export ECHO_NEST_API_KEY=<ECHONEST_API_KEY>
 ```
 
 
-#### Fetch and join Google library
-Writes to `data/google_library.json`
+#### Create similar artists playlists in Google Music account
+Writes to `data/google_library.json`. You can issue an "app-specific password"
+to avoid displaying your main google password in plain text. (But the app-specific
+password should still be considered a secret).
 ```sh
+export GOOGLE_USER=<GOOGLE_USERNAME> GOOGLE_PASSWORD=<GOOGLE_PASSWORD>
 ./bin/fetch_google_library
 ./bin/add_google_ids_to_library
+./bin/create_similar_music_playlists_in_google_account
 ```

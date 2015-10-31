@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+from random import shuffle
+import os
+
+import gmusicapi
+
+from apis.echonest import SimilarArtists
+from apis.google import GoogleLibrary
+from music_graph.library import MusicLibrary
+from music_graph.utils import by
+from music_graph.utils import info
+from music_graph.utils import warn
+
+
+lib = MusicLibrary.load()
+google_lib = GoogleLibrary.load()
+similar_artists = SimilarArtists.load()
+
+client = gmusicapi.Mobileclient()
+assert client.login(os.environ['GOOGLE_USER'],
+                    os.environ['GOOGLE_PASSWORD'],
+                    gmusicapi.Mobileclient.FROM_MAC_ADDRESS)
+
+playlists = by('name', client.get_all_playlists())
+
+for mbid, lib_artist in lib.data.iteritems():
+    if lib.is_excluded_artist(mbid):
+        continue
+
+    artist_name = lib.get_artist_name(mbid)
+
+    playlist_name = artist_name
+    if playlist_name in playlists:
+        continue
+
+    try:
+        google_id = lib_artist['google_id']
+    except KeyError:
+        warn("No google ID for artist '%s'" % artist_name)
+        continue
+
+    try:
+        similar_artists_artist = similar_artists.data[mbid]
+    except KeyError:
+        warn("No similar artists for '%s'" % artist_name)
+        continue
+
+    similar_artist_google_ids = set()
+    for similar_artist in similar_artists_artist['similar']:
+        try:
+            lib_similar_artist = lib.data[similar_artist['mbid']]
+            similar_artist_google_id = lib_similar_artist['google_id']
+        except KeyError:
+            continue
+        else:
+            similar_artist_google_ids.add(similar_artist_google_id)
+
+    playlist_track_ids = [
+        track['id']
+        for track in google_lib.data
+        if track.get('artistId', [None])[0] in similar_artist_google_ids
+    ]
+    shuffle(playlist_track_ids)
+
+    try:
+        playlist_id = client.create_playlist(playlist_name)
+        client.add_songs_to_playlist(playlist_id, playlist_track_ids)
+    except gmusicapi.exceptions.CallFailure as ex:
+        warn("gmusicapi error: %s(%s)" % (type(ex).__name__, ex))
+    else:
+        info("'%s' created similar artist playlist (%d) tracks" % (
+            artist_name, len(playlist_track_ids)))

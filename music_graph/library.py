@@ -57,6 +57,17 @@ class MusicLibrary(Persistable):
         instance.data = python
         return instance
 
+    def get_artist_name(self, mbid):
+        names = self.data[mbid]['names'].keys()
+        if len(names) > 1:
+            warn("Multiple names for artist %s: %s" % (
+                mbid, ', '.join('%s' % name for name in names)))
+        return names[0]
+
+    def is_excluded_artist(self, mbid):
+        return len(self.data[mbid]['tracks']) < 2
+
+
 def validate_artist_id(artist_id):
     artist_id = str(artist_id)
     if MBID_REGEX.match(artist_id):

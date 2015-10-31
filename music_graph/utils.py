@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import os
+import sys
 import time
 
 from fish import ProgressFish
@@ -29,6 +30,18 @@ class Persistable(object):
     @classmethod
     def from_python(cls, python):
         return cls(**python)
+
+
+def info(msg):
+    print msg
+
+
+def warn(msg):
+    print >>sys.stderr, msg
+
+
+def by(key, dicts):
+    return {d[key]: d for d in dicts}
 
 
 def progress(iterable, **kwargs):

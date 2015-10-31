@@ -24,6 +24,8 @@ class MusicGraph(nx.Graph, Persistable):
     def add_nodes_from_library(self, library):
         genre2mbids = defaultdict(set)
         for mbid, data in sorted(library.data.items()):
+            if library.is_excluded_artist(mbid):
+                continue
             if not len(data['tracks']) > 1:
                 continue
             for key in ['names', 'genres']:
