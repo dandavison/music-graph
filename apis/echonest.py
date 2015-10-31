@@ -19,7 +19,7 @@ CATALOG_NAME = 'similar-artists'
 
 
 class SimilarArtists(Persistable):
-    file = ECHONEST_SIMILAR_ARTISTS_FILE
+    FILE = ECHONEST_SIMILAR_ARTISTS_FILE
     N_SIMILAR = 100
 
     def __init__(self):

@@ -15,12 +15,12 @@ class Persistable(object):
 
     @classmethod
     def load(cls):
-        with open(cls.file, 'r') as fp:
+        with open(cls.FILE, 'r') as fp:
             return cls.from_python(
                 json.load(fp, object_pairs_hook=OrderedDict))
 
     def save(self):
-        with open(self.file, 'w') as fp:
+        with open(self.FILE, 'w') as fp:
             fp.write(self.to_json())
 
     def to_json(self):

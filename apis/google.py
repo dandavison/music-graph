@@ -11,7 +11,7 @@ PASSWORD = os.environ['GOOGLE_PASSWORD']
 
 
 class GoogleLibrary(Persistable):
-    file = GOOGLE_LIBRARY_FILE
+    FILE = GOOGLE_LIBRARY_FILE
 
     def __init__(self):
         self.data = []

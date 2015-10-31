@@ -21,7 +21,7 @@ class ValidationError(Exception):
 
 
 class MusicLibrary(Persistable):
-    file = LIBRARY_FILE
+    FILE = LIBRARY_FILE
 
     def __init__(self, path=None):
         self.data = defaultdict(lambda: {'names': Counter(),

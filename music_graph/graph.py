@@ -12,7 +12,7 @@ from music_graph.utils import Persistable
 
 
 class MusicGraph(nx.Graph, Persistable):
-    file = GRAPH_FILE
+    FILE = GRAPH_FILE
 
     # A networkx feature: maintain node order for consistent serialization.
     node_dict_factory = OrderedDict
