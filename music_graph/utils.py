@@ -36,6 +36,10 @@ def info(msg):
     print msg
 
 
+def error(msg):
+    print >>sys.stderr, msg
+
+
 def warn(msg):
     print >>sys.stderr, msg
 

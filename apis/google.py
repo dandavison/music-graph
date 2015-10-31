@@ -3,11 +3,17 @@ import os
 from gmusicapi import Mobileclient
 
 from music_graph.settings import GOOGLE_LIBRARY_FILE
+from music_graph.utils import error
 from music_graph.utils import Persistable
 
-
-USER = os.environ['GOOGLE_USER']
-PASSWORD = os.environ['GOOGLE_PASSWORD']
+try:
+    USER = os.environ['GOOGLE_USER']
+    PASSWORD = os.environ['GOOGLE_PASSWORD']
+except KeyError:
+    error(
+        "Provide your google account login details as environment "
+        "variables:\n"
+        "export GOOGLE_USER=<username> GOOGLE_PASSWORD=<password>")
 
 
 class GoogleLibrary(Persistable):
