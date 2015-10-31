@@ -33,3 +33,11 @@ Fetches 100 similar artists per artist. Creates `data/echonest_similar_artists.j
 ```sh
 ./bin/write_echonest_similar_artists.py
 ```
+
+
+#### Fetch and join Google library
+Writes to `data/google_library.json`
+```sh
+./bin/fetch_google_library
+./bin/add_google_ids_to_library
+```

@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+import sys
+
+from fuzzywuzzy.process import extractOne
+
+from apis.google import GoogleLibrary
+from music_graph.library import MusicLibrary
+
+FUZZYWUZZY_SCORE_CUTOFF = 95
+
+
+lib = MusicLibrary.load()
+mbid2name = {key: val['names'].keys()[0]
+             for key, val in lib.data.iteritems()}
+
+google_library = GoogleLibrary.load()
+
+google_artists = set()
+google_artists_without_id = set()
+for track in google_library.data:
+    try:
+        [artist_id] = track['artistId']
+    except ValueError:
+        assert len(track['artistId']) > 1
+        pass
+    except KeyError:
+        google_artists_without_id.add(track['albumArtist'])
+    else:
+        artist = track['albumArtist']
+        if artist_id and artist:
+            google_artists.add((artist_id, artist))
+
+google_artists_with_id = {artist for artist_id, artist in google_artists}
+for artist in sorted(google_artists_without_id - google_artists_with_id):
+    print >>sys.stderr, (
+        "No google ID for album artist '%s'" % artist.encode('utf-8'))
+
+
+for google_artist_id, google_artist_name in google_artists:
+    lib_artist_name, score, mbid = extractOne(google_artist_name, mbid2name)
+
+    output = (score,
+              google_artist_name.encode('utf-8'),
+              lib_artist_name.encode('utf-8'))
+
+    if score > FUZZYWUZZY_SCORE_CUTOFF:
+        lib.data[mbid]['google_id'] = google_artist_id
+    else:
+        print >>sys.stderr, "Low fuzzy match score: %d\n\t%s\n\t%s" % output
+
+lib.save()

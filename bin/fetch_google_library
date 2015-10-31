@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+from apis.google import GoogleLibrary
+
+
+lib = GoogleLibrary()
+lib.fetch()
+lib.save()
