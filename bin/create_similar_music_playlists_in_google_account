@@ -45,7 +45,7 @@ for mbid, lib_artist in lib.data.iteritems():
         warn("No similar artists for '%s'" % artist_name)
         continue
 
-    similar_artist_google_ids = set()
+    similar_artist_google_ids = {google_id}
     for similar_artist in similar_artists_artist['similar']:
         try:
             lib_similar_artist = lib.data[similar_artist['mbid']]
