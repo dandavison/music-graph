@@ -29,8 +29,11 @@ Go to http://127.0.0.1:5000/
 
 
 #### Fetch Echonest similar artist data
-Fetches 100 similar artists per artist. Creates `data/echonest_similar_artists.json`
+Fetches 100 similar artists per artist. Creates
+`data/echonest_similar_artists.json`. First create an echonest account and get
+your echonest API key.
 ```sh
+export ECHO_NEST_API_KEY=<ECHONEST_API_KEY>
 ./bin/write_echonest_similar_artists.py
 ```
 
