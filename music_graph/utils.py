@@ -48,6 +48,22 @@ def by(key, dicts):
     return {d[key]: d for d in dicts}
 
 
+def round_robin(iterators):
+    """
+    Yield items from iterators until exhaustion.
+
+    Yield an item from each non-exhausted iterator in turn, until all are
+    exhausted.
+    """
+    n_iterables = len(iterators)
+    while iterators:
+        for iterator in list(iterators):
+            try:
+                yield next(iterator)
+            except StopIteration:
+                iterators.remove(iterator)
+
+
 def progress(iterable, **kwargs):
     fish = ProgressFish(**kwargs)
     for i, item in enumerate(iterable):
