@@ -6,7 +6,6 @@ import sys
 from music_graph.settings import LIBRARY_FILE
 from music_graph.track import get_tracks
 from music_graph.utils import Persistable
-from music_graph.utils import progress
 
 
 MBID_REGEX = re.compile(r'[0-9a-fA-F]' * 8 + '-' +
@@ -32,7 +31,7 @@ class MusicLibrary(Persistable):
         self.data = dict(self.data)
 
     def populate(self, path):
-        for track in progress(get_tracks(path)):
+        for track in get_tracks(path):
             try:
                 artist_name = validate_artist_name(track.artistname)
                 artist_id = validate_artist_id(track.artistid)
