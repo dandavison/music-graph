@@ -4,13 +4,13 @@ import sys
 
 import gmusicapi
 
-from apis.echonest import SimilarArtists
-from apis.google import GoogleLibrary
+from music_graph.apis.echonest import SimilarArtists
+from music_graph.apis.google import GoogleLibrary
 from music_graph.library import MusicLibrary
 from music_graph.utils import by
 from music_graph.utils import info
 from music_graph.utils import warn
-from playlist import generate_playlist
+from music_graph.playlist import generate_playlist
 
 
 if __name__ == '__main__':

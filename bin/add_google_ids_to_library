@@ -3,7 +3,7 @@ import sys
 
 from fuzzywuzzy.process import extractOne
 
-from apis.google import GoogleLibrary
+from music_graph.apis.google import GoogleLibrary
 from music_graph.library import MusicLibrary
 
 FUZZYWUZZY_SCORE_CUTOFF = 95

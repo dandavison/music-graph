@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from apis.echonest import SimilarArtists
+from music_graph.apis.echonest import SimilarArtists
 from music_graph.library import MusicLibrary
 from music_graph.utils import progress
 

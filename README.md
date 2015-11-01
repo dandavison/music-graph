@@ -42,7 +42,7 @@ This will create `data/graph.json`. The graph has one node per artist and no edg
 
 #### Run the server
 ```sh
-python music_graph/server.py
+python music_graph/app/server.py
 ```
 
 Go to http://127.0.0.1:5000/

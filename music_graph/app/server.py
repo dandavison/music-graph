@@ -4,8 +4,8 @@ import os
 import flask
 from flask import Flask
 
-from graph import MusicGraph
-from library import MusicLibrary
+from music_graph.graph import MusicGraph
+from music_graph.library import MusicLibrary
 
 
 LIBRARY = None

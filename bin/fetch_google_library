@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from apis.google import GoogleLibrary
+from music_graph.apis.google import GoogleLibrary
 
 
 lib = GoogleLibrary()
