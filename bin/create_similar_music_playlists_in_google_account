@@ -82,7 +82,7 @@ if __name__ == '__main__':
             playlist_id = client.create_playlist(playlist_name)
             client.add_songs_to_playlist(playlist_id, playlist_track_ids)
         except gmusicapi.exceptions.CallFailure as ex:
-            warn("gmusicapi error: %s(%s)" % (type(ex).__name__, ex))
+            warn("gmusicapi error: %s" % type(ex).__name__)
         else:
             info("'%s' created similar artist playlist (%d) tracks" % (
                 artist_name, len(playlist_track_ids)))
