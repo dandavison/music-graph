@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+from music_graph.apis.echonest import SimilarArtists
+from music_graph.library import MusicLibrary
+from music_graph.utils import progress
+
+
+
+similar_artists = SimilarArtists.load()
+
+for mbid, artist in progress(similar_artists.data.iteritems(),
+                             total=len(similar_artists.data)):
+    for sim_artist_dict in artist['similar']:
+        try:
+            sim_artist = similar_artists.data[sim_artist_dict['mbid']]
+        except KeyError:
+            continue
+        sim_artist_sim_mbids = [a['mbid'] for a in sim_artist['similar']]
+        if mbid not in sim_artist_sim_mbids:
+            sim_artist['similar'].append({
+                'enid': artist['enid'],
+                'mbid': mbid,
+                'name': 'NA',
+            })
+similar_artists.save()
