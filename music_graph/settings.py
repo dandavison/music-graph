@@ -2,6 +2,13 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def path(*args):
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_dir, *args)
+
+
+DATABASE_SCHEMA_FILE = path('music_graph', 'db', 'schema.sql')
+DATABASE_URI = path('data', 'db.sqlite3')
 
 ECHONEST_SIMILAR_ARTISTS_FILE = os.path.join(BASE_DIR, 'data',
                                              'echonest_similar_artists.json')
