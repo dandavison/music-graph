@@ -8,7 +8,7 @@ from music_graph.utils import progress
 similar_artists = SimilarArtists.load()
 
 for mbid, artist in progress(similar_artists.data.iteritems(),
-                             total=len(similar_artists.data)):
+                             len(similar_artists.data)):
     for sim_artist_dict in artist['similar']:
         try:
             sim_artist = similar_artists.data[sim_artist_dict['mbid']]

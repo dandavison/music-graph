@@ -25,6 +25,9 @@ class Table(object):
     def execute(self, *args):
         return self.conn.execute(*args)
 
+    def executemany(self, *args):
+        return self.conn.executemany(*args)
+
     def insert(self, **kwargs):
         columns, values = zip(*kwargs.items())
         sql = "INSERT INTO %s(%s) VALUES (%s);" % (
@@ -34,11 +37,24 @@ class Table(object):
         self.execute(sql, values)
         self.commit()
 
+    def insertmany(self, columns, values):
+        sql = "INSERT INTO %s(%s) VALUES (%s);" % (
+            self.name,
+            ', '.join(columns),
+            ', '.join(['?'] * len(columns)))
+        self.executemany(sql, values)
+        self.commit()
+
     def select(self, **kwargs):
-        columns, values = zip(*kwargs.items())
-        conditions = ' AND '.join('%s = ?' % column
+        sql = "SELECT * FROM %s" % self.name
+        if kwargs:
+            columns, values = zip(*kwargs.items())
+            conditions = ' AND '.join('%s = ?' % column
                                   for column in columns)
-        sql = "SELECT * FROM %s WHERE %s;" % (self.name, conditions)
+            sql += " WHERE %s" % (conditions,)
+        else:
+            values = []
+        sql += ";"
         return self.execute(sql, values)
 
     def select_unique(self, **kwargs):

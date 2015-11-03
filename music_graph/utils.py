@@ -64,11 +64,32 @@ def round_robin(iterators):
                 iterators.remove(iterator)
 
 
-def progress(iterable, **kwargs):
-    fish = ProgressFish(**kwargs)
+def progress(iterable, total):
+    fish = ProgressFish(total=total)
     for i, item in enumerate(iterable):
         yield item
         fish.animate(amount=i)
+
+
+def rate_limit(iterable, interval):
+    interval = timedelta(seconds=interval)
+    last_time = datetime.now() - interval
+    for item in iterable:
+        waited = datetime.now() - last_time
+        if waited < interval:
+            time.sleep((interval - waited).total_seconds())
+        last_time = datetime.now()
+        yield item
+
+
+def repeat_until_success(fn, interval):
+    while True:
+        try:
+            return fn()
+        except:
+            if interval:
+                warn("Pausing for %ds" % interval)
+                time.sleep(interval)
 
 
 def wait_until(fn, timeout=THIRTY_SECONDS, sleep=1):
