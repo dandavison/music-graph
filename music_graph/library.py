@@ -33,12 +33,17 @@ def populate(path):
             id=artist_id,
             name=artist_name,
         )
-        track_table.insert(
+        try:
+            track_table.insert(
             artist_id=artist.id,
             name=dbm_track.trackname,
             path=dbm_track.path,
             genre=genre,
         )
+        except Exception as ex:
+            print "%s: %s" % (ex.__class__.__name__, ex)
+            import ipdb ; ipdb.set_trace()
+
 
 
 def validate_artist_id(artist_id):

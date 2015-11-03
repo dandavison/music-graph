@@ -21,10 +21,11 @@ def is_music(path):
 
 
 def get_tracks(path):
-    tracks = (Track(f) for f in file_paths(path) if is_music(f))
-    for t in tracks:
-
+    for p in file_paths(path):
+        if not is_music(p):
+            continue
         try:
+            t = Track(p)
             t.set_tags()
         except Exception as ex:
             print >>sys.stderr, "%s: %s" % (ex.__class__.__name__, ex)
@@ -38,6 +39,18 @@ def error(msg):
 
 
 class Track(object):
+    attr_names = ['dbm_artistid',
+                  'artistid',
+                  'artistname',
+                  'dbm_albumartistid',
+                  'albumartistid',
+                  'albumartistname',
+                  'releasename',
+                  'releaseid',
+                  'genre',
+                  'artist',
+                  'albumartist']
+
     def __init__(self, path):
         self.path = path
         if not os.path.exists(path):
@@ -45,19 +58,8 @@ class Track(object):
 
         self.format = os.path.splitext(path)[1][1:]
 
-        self.dbm_artistid = ''
-        self.artistid = ''
-        self.artistname = ''
-
-        self.dbm_albumartistid = ''
-
-        self.albumartistid = ''
-        self.albumartistname = ''
-
-        self.releasename = ''
-        self.releaseid = ''
-
-        self.genre = ''
+        for attr_name in self.attr_names:
+            setattr(self, attr_name, u'')
 
         self.artist = None
         self.albumartist = None
@@ -72,6 +74,11 @@ class Track(object):
         except:
             error('failed to read tags for %s' % self.path)
         self.valid = True if (self.artistid or self.artistname) else False
+
+        for attr_name in self.attr_names:
+            attr = getattr(self, attr_name)
+            if attr is not None:
+                setattr(self, attr_name, attr.decode('utf-8'))
 
     def __repr__(self):
         return '%s(%s)' % (type(self).__name__, self.path)

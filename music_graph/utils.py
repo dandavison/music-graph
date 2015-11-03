@@ -85,4 +85,4 @@ def wait_until(fn, timeout=THIRTY_SECONDS, sleep=1):
 def file_paths(path):
     for dirpath, dirnames, filenames in os.walk(path):
         for f in filenames:
-            yield os.path.join(dirpath, f)
+            yield os.path.join(dirpath, f).decode('utf-8')
