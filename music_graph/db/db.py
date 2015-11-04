@@ -66,6 +66,16 @@ class Table(object):
         else:
             raise MultipleMatchingRows()
 
+    def update(self, set_kwargs, where_kwargs):
+        set_columns, set_values = zip(*set_kwargs.items())
+        where_columns, where_values = zip(*where_kwargs.items())
+        sql = "UPDATE %s SET %s WHERE %s;" % (
+            self.name,
+            ', '.join('%s = ?' % key for key in set_columns),
+            ', '.join('%s = ?' % key for key in where_columns))
+        self.execute(sql, set_values + where_values)
+        self.commit()
+
     def select_unique_or_insert(self, **kwargs):
         try:
             return self.select_unique(**kwargs)
