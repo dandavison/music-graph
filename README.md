@@ -8,25 +8,27 @@ pip install -r requirements.txt
 python setup.py develop
 ```
 
-#### Create library file listing artists in your music library
-This will create `data/library.json`
+#### Create database
 ```sh
-./bin/write_library_file /path/to/MyMusicLibrary
+./bin/create_database
+```
+
+
+#### Load folder of music into the database
+```sh
+./bin/load_library /path/to/music
 ```
 
 #### Fetch Echonest similar artist data
-Fetches 100 similar artists per artist. Creates
-`data/echonest_similar_artists.json`. First create an echonest account and get
-your echonest API key.
+First create an echonest account and get your echonest API key. Fetches 100
+similar artists per artist.
 ```sh
 export ECHO_NEST_API_KEY=<ECHONEST_API_KEY>
 ./bin/write_echonest_similar_artists.py
 ```
 
 #### Create similar artists playlists in Google Music account
-Writes to `data/google_library.json`. You can issue an "app-specific password"
-to avoid displaying your main google password in plain text. (But the app-specific
-password should still be considered a secret).
+You can issue an "app-specific password" to avoid displaying your main google password in plain text. (But the app-specific password should still be considered a secret).
 ```sh
 export GOOGLE_USER=<GOOGLE_USERNAME> GOOGLE_PASSWORD=<GOOGLE_PASSWORD>
 ./bin/fetch_google_library
