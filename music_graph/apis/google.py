@@ -2,9 +2,8 @@ import os
 
 from gmusicapi import Mobileclient
 
-from music_graph.settings import GOOGLE_LIBRARY_FILE
 from music_graph.utils import error
-from music_graph.utils import Persistable
+
 
 try:
     USER = os.environ['GOOGLE_USER']
@@ -16,22 +15,7 @@ except KeyError:
         "export GOOGLE_USER=<username> GOOGLE_PASSWORD=<password>")
 
 
-class GoogleLibrary(Persistable):
-    FILE = GOOGLE_LIBRARY_FILE
-
-    def __init__(self):
-        self.data = []
-
-    def to_python(self):
-        return self.data
-
-    @classmethod
-    def from_python(cls, python):
-        instance = cls()
-        instance.data = python
-        return instance
-
-    def fetch(self):
-        client = Mobileclient()
-        assert client.login(USER, PASSWORD, Mobileclient.FROM_MAC_ADDRESS)
-        self.data = client.get_all_songs()
+def fetch_all_tracks():
+    client = Mobileclient()
+    assert client.login(USER, PASSWORD, Mobileclient.FROM_MAC_ADDRESS)
+    return client.get_all_songs()

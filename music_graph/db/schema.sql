@@ -28,3 +28,11 @@ CREATE TABLE track
         genre TEXT
 );
 CREATE INDEX track_artist_id_index ON track(artist_id);
+
+
+DROP TABLE IF EXISTS google_track;
+CREATE TABLE google_track
+(
+        artist_id TEXT,
+        json TEXT NOT NULL
+);

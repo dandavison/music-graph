@@ -1,7 +1,20 @@
 #!/usr/bin/env python
-from music_graph.apis.google import GoogleLibrary
+import json
+
+from music_graph.apis.google import fetch_all_tracks
+from music_graph.db import Table
+from music_graph.settings import DATABASE_URI
 
 
-lib = GoogleLibrary()
-lib.fetch()
-lib.save()
+google_track_table = Table('google_track', DATABASE_URI)
+tracks = fetch_all_tracks()
+
+values = []
+for track in tracks:
+    try:
+        [artist_id] = track['artistId']
+    except KeyError, ValueError:
+        continue
+    values.append((artist_id, json.dumps(track)))
+
+google_track_table.insertmany(('artist_id', 'json'), values)
