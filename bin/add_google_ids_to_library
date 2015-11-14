@@ -2,24 +2,27 @@
 import json
 
 from fuzzywuzzy.process import extractOne
+from sqlalchemy import select
+from sqlalchemy import update
 
-from music_graph.db import Table
-from music_graph.settings import DATABASE_URI
+from music_graph.db.sqla import fetchall
+from music_graph.db.sqla import get_table
+from music_graph.utils import info
 from music_graph.utils import warn
 
 
 FUZZYWUZZY_SCORE_CUTOFF = 95
 
-artist_table = Table('artist', DATABASE_URI)
-google_track_table = Table('google_track', DATABASE_URI)
+artists_t = get_table('artists')
+google_tracks_t = get_table('google_tracks')
 
-mbid2name = dict((artist.id, artist.name)
-                 for artist in artist_table.select())
+mbid2name = dict(fetchall(select([artists_t.c.id, artists_t.c.name])))
 
 google_artists = filter(
     all,
-    ((track.artist_id, json.loads(track.json).get('albumArtist'))
-     for track in google_track_table.select()))
+    ((artist_id, json.loads(track_json).get('albumArtist'))
+     for artist_id, track_json in fetchall(select([google_tracks_t.c.artist_id,
+                                                   google_tracks_t.c.json]))))
 
 for google_artist_id, google_artist_name in google_artists:
     lib_artist_name, score, mbid = extractOne(google_artist_name, mbid2name)
@@ -29,6 +32,10 @@ for google_artist_id, google_artist_name in google_artists:
               lib_artist_name.encode('utf-8'))
 
     if score > FUZZYWUZZY_SCORE_CUTOFF:
-        artist_table.update({'google_id': google_artist_id}, {'id': mbid})
+        (update(artists_t)
+         .values(google_id=google_artist_id)
+         .where(artists_t.c.id == mbid)
+         .execute())
+        info("Updated google ID for artist '%s'" % lib_artist_name)
     else:
         warn("Low fuzzy match score: %d\n\t%s\n\t%s" % output)
