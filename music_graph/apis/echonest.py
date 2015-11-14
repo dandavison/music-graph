@@ -91,6 +91,7 @@ def fetch_mbids(enids):
             print >>sys.stderr, (
                 "Failed to get MusicBrainz ID for similar artist '%s'" %
                 res['artist_name'])
+            continue
         assert foreign['catalog'] == 'musicbrainz'
         enid2mbid[res['artist_id']] = (
             extract_mbid_from_echonest_mbid(foreign['foreign_id']))
