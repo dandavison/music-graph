@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import sqlite3
 
-from music_graph.settings import DATABASE_URI
+from music_graph.settings import DATABASE_PATH
 from music_graph.settings import DATABASE_SCHEMA_FILE
 
 
-conn = sqlite3.connect(DATABASE_URI)
+conn = sqlite3.connect(DATABASE_PATH)
 cursor = conn.cursor()
 cursor.execute("PRAGMA foreign_keys = ON;")
 with open(DATABASE_SCHEMA_FILE) as fp:

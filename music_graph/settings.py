@@ -8,8 +8,8 @@ def path(*args):
 
 
 DATABASE_SCHEMA_FILE = path('music_graph', 'db', 'schema.sql')
-DATABASE_URI = path('data', 'db.sqlite3')
-
+DATABASE_PATH = path('data', 'db.sqlite3')
+DATABASE_URI = 'sqlite:///' + DATABASE_PATH
 ECHONEST_SIMILAR_ARTISTS_FILE = os.path.join(BASE_DIR, 'data',
                                              'echonest_similar_artists.json')
 GOOGLE_LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'google_library.json')
