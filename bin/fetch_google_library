@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 import json
 
-from sqlalchemy.sql import select
-
 from music_graph.apis.google import fetch_all_tracks
-from music_graph.db.sqla import ENGINE
+from music_graph.db.sqla import execute
 from music_graph.db.sqla import get_table
 
 
-google_tracks = get_table('google_tracks')
-conn = ENGINE.connect()
+google_tracks_t = get_table('google_tracks')
 tracks = fetch_all_tracks()
 
 values = []
@@ -23,4 +20,4 @@ for track in tracks:
         'json': json.dumps(track)
     })
 
-conn.execute(google_tracks.insert(), values)
+execute(google_tracks_t.insert(), values)

@@ -2,7 +2,8 @@ import re
 
 from sqlalchemy.sql import select
 
-from music_graph.db.sqla import ENGINE
+from music_graph.db.sqla import execute
+from music_graph.db.sqla import fetchall
 from music_graph.db.sqla import get_table
 from music_graph.track import get_tracks
 from music_graph.utils import warn
@@ -20,15 +21,14 @@ class ValidationError(Exception):
 
 
 def populate(path):
-    artists = get_table('artists')
-    tracks = get_table('tracks')
-    conn = ENGINE.connect()
+    artists_t = get_table('artists')
+    tracks_t = get_table('tracks')
 
     def get_artist(artist_id, artist_name):
-        query = (select([artists])
-                 .where(artists.c.id == artist_id)
-                 .where(artists.c.name == artist_name))
-        results = conn.execute(query).fetchall()
+        query = (select([artists_t])
+                 .where(artists_t.c.id == artist_id)
+                 .where(artists_t.c.name == artist_name))
+        results = fetchall(query)
         if results:
             [artist] = results
             return artist
@@ -46,16 +46,16 @@ def populate(path):
 
         artist = get_artist(artist_id, artist_name)
         if not artist:
-            conn.execute(artists.insert(),
-                         id=artist_id,
-                         name=artist_name)
+            execute(artists_t.insert(),
+                    id=artist_id,
+                    name=artist_name)
             artist = get_artist(artist_id, artist_name)
 
-        conn.execute(tracks.insert(),
-                     artist_id=artist_id,
-                     name=dbm_track.trackname,
-                     path=dbm_track.path,
-                     genre=genre)
+        execute(tracks_t.insert(),
+                artist_id=artist_id,
+                name=dbm_track.trackname,
+                path=dbm_track.path,
+                genre=genre)
 
 
 def validate_artist_id(artist_id):
