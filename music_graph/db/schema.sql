@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS artist;
-CREATE TABLE artist
+DROP TABLE IF EXISTS artists;
+CREATE TABLE artists
 (
        id TEXT PRIMARY KEY,
        google_id TEXT,
@@ -8,30 +8,30 @@ CREATE TABLE artist
 );
 
 
-DROP TABLE IF EXISTS similar_artist;
-CREATE TABLE similar_artist
+DROP TABLE IF EXISTS similar_artists;
+CREATE TABLE similar_artists
 (
-       artist_1_id TEXT NOT NULL REFERENCES artist(id) ON DELETE CASCADE,
-       artist_2_id TEXT NOT NULL REFERENCES artist(id) ON DELETE CASCADE,
+       artist_1_id TEXT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
+       artist_2_id TEXT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
        source TEXT NOT NULL
 );
-CREATE INDEX similar_artist_1_index ON similar_artist(artist_1_id);
-CREATE INDEX similar_artist_2_index ON similar_artist(artist_2_id);
+CREATE INDEX similar_artist_1_index ON similar_artists(artist_1_id);
+CREATE INDEX similar_artist_2_index ON similar_artists(artist_2_id);
 
 
-DROP TABLE IF EXISTS track;
-CREATE TABLE track
+DROP TABLE IF EXISTS tracks;
+CREATE TABLE tracks
 (
-        artist_id TEXT NOT NULL REFERENCES artist(id) ON DELETE CASCADE,
+        artist_id TEXT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
         name TEXT NOT NULL,
         path TEXT,
         genre TEXT
 );
-CREATE INDEX track_artist_id_index ON track(artist_id);
+CREATE INDEX track_artist_id_index ON tracks(artist_id);
 
 
-DROP TABLE IF EXISTS google_track;
-CREATE TABLE google_track
+DROP TABLE IF EXISTS google_tracks;
+CREATE TABLE google_tracks
 (
         artist_id TEXT,
         json TEXT NOT NULL

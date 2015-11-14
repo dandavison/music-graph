@@ -20,8 +20,8 @@ class ValidationError(Exception):
 
 
 def populate(path):
-    artists = get_table('artist')
-    tracks = get_table('track')
+    artists = get_table('artists')
+    tracks = get_table('tracks')
     conn = ENGINE.connect()
 
     def get_artist(artist_id, artist_name):
