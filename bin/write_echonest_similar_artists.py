@@ -1,15 +1,22 @@
 #!/usr/bin/env python
-from music_graph.db import Table
-from music_graph.settings import DATABASE_URI
+from sqlalchemy.sql import select
+
 from music_graph.apis.echonest import fetch_similar_artists
+from music_graph.db.sqla import ENGINE
+from music_graph.db.sqla import get_table
 
 
-artist_table = Table('artist', DATABASE_URI)
-similar_artist_table = Table('similar_artist', DATABASE_URI)
+artists = get_table('artists')
+similar_artists = get_table('similar_artists')
+conn = ENGINE.connect()
 
-mbids = [a.id for a in artist_table.select()]
-similar_artists = fetch_similar_artists(mbids)
-similar_artist_table.insertmany(
-    ('artist_1_id', 'artist_2_id', 'source'),
-    ((a['artist_1_id'], a['artist_2_id'], 'echonest')
-     for a in similar_artists))
+mbids_q = select([artists.c.id])
+mbids = [row[0] for row in conn.execute(mbids_q).fetchall()]
+similar_artist_objs = fetch_similar_artists(mbids)
+conn.execute(similar_artists.insert(), [
+    {
+        'artist_1_id': a['artist_1_id'],
+        'artist_2_id': a['artist_2_id'],
+        'source': 'echonest',
+    } for a in similar_artist_objs
+])
