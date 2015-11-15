@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS artists;
 CREATE TABLE artists
 (
        id TEXT PRIMARY KEY,
+       name TEXT NOT NULL,
        google_id TEXT,
-       echonest_id TEXT,
-       name TEXT NOT NULL
+       echonest_id TEXT
 );
 
 
