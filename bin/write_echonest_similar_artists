@@ -3,14 +3,14 @@ from sqlalchemy.sql import select
 
 from music_graph.apis.echonest import fetch_similar_artists
 from music_graph.db.sqla import execute
-from music_graph.db.sqla import fetchall
+from music_graph.db.sqla import fetchall_flat
 from music_graph.db.sqla import get_table
 
 
 artists_t = get_table('artists')
 similar_artists_t = get_table('similar_artists')
 
-mbids = [row[0] for row in fetchall(select([artists_t.c.id]))]
+mbids = fetchall_flat(select([artists_t.c.id]))
 similar_artist = fetch_similar_artists(mbids)
 execute(similar_artists_t.insert(), [
     {
