@@ -1,16 +1,28 @@
 #!/usr/bin/env python
+import json
 import os
 import sys
 
+from sqlalchemy import func
+from sqlalchemy import select
 import gmusicapi
 
-from music_graph.apis.echonest import SimilarArtists
-from music_graph.apis.google import GoogleLibrary
-from music_graph.library import MusicLibrary
+from music_graph.db.sqla import get_table
+from music_graph.db.sqla import fetchall
+from music_graph.db.sqla import fetchall_flat
+
 from music_graph.utils import by
 from music_graph.utils import info
 from music_graph.utils import warn
 from music_graph.playlist import generate_playlist
+
+
+def is_excluded_artist(mbid):
+    [(n_tracks,)] = (select([func.count('*')])
+                     .select_from(artists_t)
+                     .execute()
+                     .fetchall())
+    return n_tracks < 2
 
 
 if __name__ == '__main__':
@@ -20,9 +32,11 @@ if __name__ == '__main__':
         assert args == ['-f']
         overwrite = True
 
-    lib = MusicLibrary.load()
-    google_lib = GoogleLibrary.load()
-    similar_artists = SimilarArtists.load()
+    artists_t = get_table('artists')
+    similar_artists_t = get_table('similar_artists')
+    google_tracks_t = get_table('google_tracks')
+
+    google_tracks = fetchall(select([google_tracks_t]))
 
     client = gmusicapi.Mobileclient()
     assert client.login(os.environ['GOOGLE_USER'],
@@ -31,11 +45,14 @@ if __name__ == '__main__':
 
     playlists = by('name', client.get_all_playlists())
 
-    for mbid, lib_artist in lib.data.iteritems():
-        if lib.is_excluded_artist(mbid):
-            continue
+    for mbid, artist_name, google_id in (
+            fetchall(select([artists_t.c.id,
+                             artists_t.c.name,
+                             artists_t.c.google_id]))):
 
-        artist_name = lib.get_artist_name(mbid)
+        # FIXME: O(N) queries
+        if is_excluded_artist(mbid):
+            continue
 
         playlist_name = artist_name
         if playlist_name in playlists:
@@ -45,38 +62,26 @@ if __name__ == '__main__':
             else:
                 continue
 
-        try:
-            google_id = lib_artist['google_id']
-        except KeyError:
-            warn("No google ID for artist '%s'" % artist_name)
-            continue
-
-        try:
-            similar_artists_artist = similar_artists.data[mbid]
-        except KeyError:
-            warn("No similar artists for '%s'" % artist_name)
-            continue
-
-        similar_artist_google_ids = {google_id}
-        for similar_artist in similar_artists_artist['similar']:
-            try:
-                lib_similar_artist = lib.data[similar_artist['mbid']]
-                similar_artist_google_id = lib_similar_artist['google_id']
-            except KeyError:
-                continue
-            else:
-                similar_artist_google_ids.add(similar_artist_google_id)
+        similar_artist_google_ids = set(fetchall_flat(
+            select([artists_t.c.google_id])
+            .select_from(
+                artists_t.join(
+                    similar_artists_t,
+                    similar_artists_t.c.artist_1_id == artists_t.c.id))
+            .where(similar_artists_t.c.artist_2_id == artists_t.c.id)))
+        similar_artist_google_ids.add(google_id)
 
         playlist_tracks = generate_playlist(
-            google_lib.data,
+            google_tracks,
             similar_artist_google_ids,
-            lambda track: track.get('artistId', [None])[0])
+            lambda track: track[0])
 
         if not playlist_tracks:
             warn("No playlist tracks for '%s'" % artist_name)
             continue
 
-        playlist_track_ids = [track['id'] for track in playlist_tracks]
+        playlist_track_ids = [json.loads(track[1])['id']
+                              for track in playlist_tracks]
 
         try:
             playlist_id = client.create_playlist(playlist_name)

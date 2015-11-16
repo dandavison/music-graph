@@ -1,3 +1,4 @@
+from more_itertools import flatten
 import sqlalchemy as sqla
 
 from music_graph.settings import DATABASE_URI
@@ -13,6 +14,10 @@ def execute(*args, **kwargs):
 
 def fetchall(*args, **kwargs):
     return execute(*args, **kwargs).fetchall()
+
+
+def fetchall_flat(*args, **kwargs):
+    return flatten(fetchall(*args, **kwargs))
 
 
 def get_table(name):

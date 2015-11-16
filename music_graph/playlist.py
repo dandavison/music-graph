@@ -5,7 +5,7 @@ def generate_playlist(tracks, artists, artist_fn):
     """
     Generate a playlist of tracks by artists.
 
-    tracks: list of dicts
+    tracks: list of track objects
     artists: choose playlist tracks only from artists in this set
     artist_fn: function: (track) -> artist
     """
