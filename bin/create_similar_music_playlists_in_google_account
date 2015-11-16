@@ -24,6 +24,19 @@ def is_excluded_artist(mbid):
     return n_tracks < 2
 
 
+def _get_similar_artists(mbid, artists_t, similar_artists_t):
+    f = lambda id_1_attrname, id_2_attrname: set(map(tuple, fetchall(
+        select([artists_t.c.name, artists_t.c.google_id])
+        .select_from(
+            artists_t.join(
+                similar_artists_t,
+                getattr(similar_artists_t.c, id_2_attrname) == artists_t.c.id))
+        .where(getattr(similar_artists_t.c, id_1_attrname) == mbid))))
+
+    return (f('artist_1_id', 'artist_2_id') |
+            f('artist_2_id', 'artist_1_id'))
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     overwrite = False
@@ -61,13 +74,8 @@ if __name__ == '__main__':
             else:
                 continue
 
-        similar_artists = set(map(tuple, fetchall(
-            select([artists_t.c.name, artists_t.c.google_id])
-            .select_from(
-                artists_t.join(
-                    similar_artists_t,
-                    similar_artists_t.c.artist_2_id == artists_t.c.id))
-            .where(similar_artists_t.c.artist_1_id == mbid))))
+        similar_artists = (
+            _get_similar_artists(mbid, artists_t, similar_artists_t))
         similar_artists.add((artist_name, google_id))
 
         similar_artist_names, similar_artist_google_ids = zip(*similar_artists)
