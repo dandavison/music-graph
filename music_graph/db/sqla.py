@@ -17,7 +17,7 @@ def fetchall(*args, **kwargs):
 
 
 def fetchall_flat(*args, **kwargs):
-    return flatten(fetchall(*args, **kwargs))
+    return list(flatten(fetchall(*args, **kwargs)))
 
 
 def get_table(name):
