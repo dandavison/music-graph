@@ -40,6 +40,11 @@ def error(msg):
     print >>sys.stderr, msg
 
 
+def debug(msg):
+    if False:
+        print >>sys.stderr, msg
+
+
 def warn(msg):
     print >>sys.stderr, msg
 

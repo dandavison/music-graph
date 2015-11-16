@@ -8,7 +8,7 @@ from sqlalchemy import update
 from music_graph.db.sqla import fetchall
 from music_graph.db.sqla import get_table
 from music_graph.utils import info
-from music_graph.utils import warn
+from music_graph.utils import debug
 
 
 FUZZYWUZZY_SCORE_CUTOFF = 95
@@ -38,4 +38,4 @@ for google_artist_id, google_artist_name in google_artists:
          .execute())
         info("Updated google ID for artist '%s'" % lib_artist_name)
     else:
-        warn("Low fuzzy match score: %d\n\t%s\n\t%s" % output)
+        debug("Low fuzzy match score: %d\n\t%s\n\t%s" % output)
