@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS similar_artists;
 CREATE TABLE similar_artists
 (
        artist_1_id TEXT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
-       artist_2_id TEXT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
+       artist_2_id TEXT NOT NULL,
        source TEXT NOT NULL
 );
 CREATE INDEX similar_artist_1_index ON similar_artists(artist_1_id);
