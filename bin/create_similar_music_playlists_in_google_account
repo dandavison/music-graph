@@ -9,7 +9,6 @@ import gmusicapi
 
 from music_graph.db.sqla import get_table
 from music_graph.db.sqla import fetchall
-from music_graph.db.sqla import fetchall_flat
 
 from music_graph.utils import by
 from music_graph.utils import info
@@ -62,14 +61,16 @@ if __name__ == '__main__':
             else:
                 continue
 
-        similar_artist_google_ids = set(fetchall_flat(
-            select([artists_t.c.google_id])
+        similar_artists = set(map(tuple, fetchall(
+            select([artists_t.c.name, artists_t.c.google_id])
             .select_from(
                 artists_t.join(
                     similar_artists_t,
-                    similar_artists_t.c.artist_1_id == artists_t.c.id))
-            .where(similar_artists_t.c.artist_2_id == artists_t.c.id)))
-        similar_artist_google_ids.add(google_id)
+                    similar_artists_t.c.artist_2_id == artists_t.c.id))
+            .where(similar_artists_t.c.artist_1_id == mbid))))
+        similar_artists.add((artist_name, google_id))
+
+        similar_artist_names, similar_artist_google_ids = zip(*similar_artists)
 
         playlist_tracks = generate_playlist(
             google_tracks,
@@ -89,5 +90,7 @@ if __name__ == '__main__':
         except gmusicapi.exceptions.CallFailure as ex:
             warn("gmusicapi error: %s" % type(ex).__name__)
         else:
-            info("'%s' created similar artist playlist (%d) tracks" % (
-                artist_name, len(playlist_track_ids)))
+            info("'%s' created similar artist playlist (%d) tracks%s" % (
+                artist_name,
+                len(playlist_track_ids),
+                '\n\t' + '\n\t'.join(sorted(set(similar_artist_names)))))
