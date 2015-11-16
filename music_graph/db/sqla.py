@@ -1,10 +1,10 @@
 from more_itertools import flatten
 import sqlalchemy as sqla
 
-from music_graph.settings import DATABASE_URI
+from music_graph import settings
 
 
-_ENGINE = sqla.create_engine(DATABASE_URI)
+_ENGINE = sqla.create_engine(settings.DATABASE_URI, echo=settings.ECHO_SQL)
 _METADATA = sqla.MetaData(bind=_ENGINE)
 
 

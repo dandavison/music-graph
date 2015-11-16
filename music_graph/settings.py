@@ -15,3 +15,5 @@ ECHONEST_SIMILAR_ARTISTS_FILE = os.path.join(BASE_DIR, 'data',
 GOOGLE_LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'google_library.json')
 GRAPH_FILE = os.path.join(BASE_DIR, 'data', 'graph.json')
 LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'library.json')
+
+ECHO_SQL = bool(os.getenv('ECHO_SQL'))
