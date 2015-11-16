@@ -1,0 +1,12 @@
+set -eu
+
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+music_path="$1"
+
+$__dir/create_database
+$__dir/load_library "$music_path"
+$__dir/write_echonest_similar_artists
+$__dir/fetch_google_library
+$__dir/add_google_ids_to_library
+$__dir/create_similar_music_playlists_in_google_account
