@@ -18,11 +18,12 @@ google_tracks_t = get_table('google_tracks')
 
 mbid2name = dict(fetchall(select([artists_t.c.id, artists_t.c.name])))
 
-google_artists = filter(
+google_artists = set(filter(
     all,
     ((artist_id, json.loads(track_json).get('albumArtist'))
-     for artist_id, track_json in fetchall(select([google_tracks_t.c.artist_id,
-                                                   google_tracks_t.c.json]))))
+     for artist_id, track_json in (
+             fetchall(select([google_tracks_t.c.artist_id,
+                              google_tracks_t.c.json]))))))
 
 for google_artist_id, google_artist_name in google_artists:
     lib_artist_name, score, mbid = extractOne(google_artist_name, mbid2name)
