@@ -44,7 +44,7 @@ def fetch_similar_artists(mbids):
     for a in similar_artists:
         try:
             similar_artists_with_mbids.append({
-                'artist_1_id': mbid,
+                'artist_1_id': a['artist_1_id'],
                 'artist_2_id': enid2mbid[a['artist_2_enid']],
             })
         except KeyError:
