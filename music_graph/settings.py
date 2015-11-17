@@ -7,13 +7,18 @@ def path(*args):
     return os.path.join(base_dir, *args)
 
 
-DATABASE_SCHEMA_FILE = path('music_graph', 'db', 'schema.sql')
-DATABASE_PATH = path('data', 'db.sqlite3')
-DATABASE_URI = 'sqlite:///' + DATABASE_PATH
-ECHONEST_SIMILAR_ARTISTS_FILE = os.path.join(BASE_DIR, 'data',
-                                             'echonest_similar_artists.json')
-GOOGLE_LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'google_library.json')
-GRAPH_FILE = os.path.join(BASE_DIR, 'data', 'graph.json')
-LIBRARY_FILE = os.path.join(BASE_DIR, 'data', 'library.json')
+def read_path(string):
+    return os.path.abspath(string)
 
+
+DATABASE_PATH = os.path.abspath(os.getenv('DATABASE_PATH',
+                                          path('data', 'db.sqlite3')))
 ECHO_SQL = bool(os.getenv('ECHO_SQL'))
+
+DATABASE_URI = 'sqlite:///' + DATABASE_PATH
+
+DATABASE_SCHEMA_FILE = path('music_graph', 'db', 'schema.sql')
+GRAPH_FILE = os.path.join(BASE_DIR, 'data', 'graph.json')
+
+
+
