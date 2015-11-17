@@ -26,10 +26,29 @@ class Test(unittest.TestCase):
                          {'Converge', 'Will Haven'})
         self.assertEqual(len(get_tracks()), 2)
 
+    def test_write_echonest_similar_artists(self):
+        self.bin.write_echonest_similar_artists()
+        self.assertEqual(
+            set(map(tuple, get_similar_artist_names())),
+            {('Converge', 'Will Haven'),
+             ('Will Haven', 'Converge')})
+
 
 def get_artist_names():
     artists_t = get_table('artists')
     return fetchall_flat(select([artists_t.c.name]))
+
+
+def get_similar_artist_names():
+    # TODO: Translate to sqla
+    return fetchall("""
+        SELECT artists_1.name, artists_2.name
+        FROM similar_artists
+        JOIN artists as artists_1
+        ON similar_artists.artist_1_id = artists_1.id
+        JOIN artists as artists_2
+        ON similar_artists.artist_2_id = artists_2.id;
+        """)
 
 
 def get_tracks():
@@ -52,7 +71,11 @@ class Bin(object):
     def load_library(self, *args):
         self.dispatch('load_library', *args)
 
+    def write_echonest_similar_artists(self):
+        self.dispatch('write_echonest_similar_artists')
+
 
 if __name__ == '__main__':
     assert 'DATABASE_PATH' in os.environ
+    assert 'ECHO_NEST_API_KEY' in os.environ
     unittest.main()
