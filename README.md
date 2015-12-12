@@ -8,6 +8,15 @@ pip install -r requirements.txt
 python setup.py develop
 ```
 
+#### Run the tests
+```sh
+export ECHO_NEST_API_KEY=<ECHONEST_API_KEY>
+DATABASE_PATH=/tmp/db python tests/test.py
+```
+
+Instructions below here might be out of date in this branch!
+
+
 #### Create database
 ```sh
 ./bin/create_database
