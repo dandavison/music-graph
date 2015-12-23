@@ -1,0 +1,5 @@
+#!/bin/bash
+
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sqlite3 $__dir/../data/db.sqlite3
