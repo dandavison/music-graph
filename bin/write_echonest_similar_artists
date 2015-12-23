@@ -11,11 +11,12 @@ artists_t = get_table('artists')
 similar_artists_t = get_table('similar_artists')
 
 mbids = fetchall_flat(select([artists_t.c.id]))
-similar_artist = fetch_similar_artists(mbids)
-execute(similar_artists_t.insert(), [
+similar_artists = [
     {
         'artist_1_id': a['artist_1_id'],
         'artist_2_id': a['artist_2_id'],
         'source': 'echonest',
-    } for a in similar_artist
-])
+    }
+    for a in fetch_similar_artists(mbids)
+]
+execute(similar_artists_t.insert(), similar_artists)
