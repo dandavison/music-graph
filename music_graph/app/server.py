@@ -3,10 +3,13 @@ import os
 import flask
 from flask import Flask
 
+from sqlalchemy.sql import select
+
+from music_graph.db.sqla import fetchall_flat
+from music_graph.db.sqla import get_table
 from music_graph.graph import MusicGraph
 
 
-LIBRARY = None
 GRAPH = None
 app = Flask(__name__)
 
@@ -41,8 +44,10 @@ def create_edge():
 @app.route('/play', methods=['POST'])
 def play_artist():
     artist_id = flask.request.args['artist_id']
-    track = LIBRARY.data[artist_id]['tracks'][0]
-    os.system('open "%s"' % track['path'])
+    tracks_t = get_table('tracks')
+    path = fetchall_flat(select([tracks_t.c.path])
+                         .where(tracks_t.c.artist_id == artist_id))[0]
+    os.system('open "%s"' % path)
     return flask.redirect('/')
 
 
