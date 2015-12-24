@@ -17,8 +17,10 @@ from music_graph.playlist import generate_playlist
 
 
 def is_excluded_artist(mbid):
+    tracks_t = get_table('tracks')
     [(n_tracks,)] = (select([func.count('*')])
-                     .select_from(artists_t)
+                     .select_from(tracks_t)
+                     .where(tracks_t.c.artist_id == mbid)
                      .execute()
                      .fetchall())
     return n_tracks < 2

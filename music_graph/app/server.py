@@ -1,16 +1,18 @@
-import json
 import os
 
 import flask
 from flask import Flask
 
 from music_graph.graph import MusicGraph
-from music_graph.library import MusicLibrary
 
 
 LIBRARY = None
 GRAPH = None
 app = Flask(__name__)
+
+
+class ValidationError(Exception):
+    pass
 
 
 @app.route('/', methods=['GET'])
@@ -57,9 +59,8 @@ def _is_valid_edge(artist_1, artist_2):
 
 
 if __name__ == '__main__':
-    LIBRARY = MusicLibrary.load()
-    print("Loaded library of %d artists" % len(LIBRARY.data))
     GRAPH = MusicGraph.load()
-    print("Loaded graph with %d nodes and %d edges" % (GRAPH.number_of_nodes(),
-                                                       GRAPH.number_of_edges()))
+    print("Loaded graph with %d nodes and %d edges" % (
+        GRAPH.number_of_nodes(),
+        GRAPH.number_of_edges()))
     app.run(debug=True)

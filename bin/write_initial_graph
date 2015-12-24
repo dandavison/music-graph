@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 from music_graph.graph import MusicGraph
-from music_graph.library import MusicLibrary
 
 
-lib = MusicLibrary.load()
 graph = MusicGraph()
-graph.add_nodes_from_library(lib)
+graph.add_artist_nodes()
 graph.save()
